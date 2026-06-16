@@ -1,0 +1,58 @@
+# ---------------------------------------------------------------------------
+# Terraform
+# ---------------------------------------------------------------------------
+
+# Local .terraform directories (providers, modules cache) — large, machine-specific
+**/.terraform/*
+.terraform.lock.hcl.bak
+
+
+# State files — NEVER commit. Contains secrets (RDS passwords, etc.) in plaintext.
+# Your state lives in S3, so local copies should never be tracked.
+*.tfstate
+*.tfstate.*
+*.tfstate.backup
+
+# Crash log files
+crash.log
+crash.*.log
+
+# Variable files that contain secrets or environment-specific values
+*.tfvars
+*.tfvars.json
+!example.tfvars
+!*.tfvars.example
+
+# CLI config / override files
+.terraformrc
+terraform.rc
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+
+# Plan output files — can contain sensitive values
+*.tfplan
+*.plan
+
+# ---------------------------------------------------------------------------
+# Credentials & secrets (defense in depth)
+# ---------------------------------------------------------------------------
+*.pem
+*.key
+.env
+.env.*
+!.env.example
+credentials
+aws-credentials*
+*.auto.tfvars
+
+# ---------------------------------------------------------------------------
+# OS / editor noise
+# ---------------------------------------------------------------------------
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.swp
+*~
