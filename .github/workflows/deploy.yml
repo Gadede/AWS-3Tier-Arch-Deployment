@@ -111,9 +111,6 @@ jobs:
             echo "EOF" >> $GITHUB_OUTPUT
     
 
-
-
-
 #####################################################
   #  Security checks and scanning for vulnerabilities
 #####################################################
