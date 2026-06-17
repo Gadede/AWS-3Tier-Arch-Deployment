@@ -10,9 +10,21 @@
 #   }
 # }
 
-data "aws_kms_key" "rds" {
-  key_id = "alias/aws/rds"
+
+resource "aws_kms_key" "rds" {
+  description         = "${var.project_name} RDS encryption key"
+  enable_key_rotation = true
+
+  tags = {
+    Name = "${var.project_name}-rds-kms"
+  }
 }
+
+resource "aws_kms_alias" "rds" {
+  name          = "alias/${var.project_name}-rds"
+  target_key_id = aws_kms_key.rds.key_id
+}
+
 
 # ---------------------------------------------------------------------------
 # Amazon RDS (Multi-AZ)
@@ -29,7 +41,7 @@ resource "aws_db_instance" "main" {
   max_allocated_storage = var.db_max_allocated_storage
   storage_type          = "gp2"
   storage_encrypted     = true
-  kms_key_id            = data.aws_kms_key.rds.arn 
+  kms_key_id            = aws_kms_key.rds.arn  
 
   db_name  = var.db_name
   username = var.db_username
