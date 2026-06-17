@@ -36,6 +36,7 @@ resource "aws_autoscaling_group" "web" {
   min_size         = var.web_asg_config.min_size
   max_size         = var.web_asg_config.max_size
   desired_capacity = var.web_asg_config.desired_capacity
+  wait_for_capacity_timeout = "0"
 
   launch_template {
     id      = aws_launch_template.web-tier.id
@@ -101,6 +102,7 @@ resource "aws_autoscaling_group" "app" {
   min_size         = var.web_asg_config.min_size
   max_size         = var.web_asg_config.max_size
   desired_capacity = var.web_asg_config.desired_capacity
+  wait_for_capacity_timeout = "0"
 
   launch_template {
     id      = aws_launch_template.app-tier.id
