@@ -1,6 +1,6 @@
 variable "project_name" {
   type    = string
-  default = "aws-3-tier-app"
+  default = "aws-3tier"
 }
 
 variable "app_port" {

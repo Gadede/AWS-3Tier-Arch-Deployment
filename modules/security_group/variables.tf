@@ -1,7 +1,7 @@
 variable "project_name" {
   description = "The name of the project, used for tagging resources"
   type        = string
-  default     = "3TierApp"
+  default     = "aws-3tier"
 }
 
 variable "app_port" {

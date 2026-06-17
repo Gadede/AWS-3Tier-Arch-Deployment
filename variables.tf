@@ -7,7 +7,7 @@ variable "region" {
 variable "project_name" {
   description = "The name of the project, used for tagging resources"
   type        = string
-  default     = "aws-3-tier-app"
+  default     = "aws-3tier"
 }
 
 variable "app_port" {

@@ -31,7 +31,7 @@ resource "aws_security_group" "public_alb" {
   }
 
   tags = {
-    Name = "${var.project_name}-public-alb-sg"
+    Name = "${var.project_name}-webtier-alb-sg"
   }
 }
 
@@ -89,7 +89,7 @@ resource "aws_security_group" "internal_alb" {
   }
 
   tags = {
-    Name = "${var.project_name}-internal-alb-sg"
+    Name = "${var.project_name}-apptier-alb-sg"
   }
 }
 
@@ -118,7 +118,7 @@ resource "aws_security_group" "app" {
   }
 
   tags = {
-    Name = "${var.project_name}-app-sg"
+    Name = "${var.project_name}-apptier-sg"
   }
 }
 

@@ -8,7 +8,7 @@ resource "aws_lb" "public" {
   security_groups    = [var.public_alb_sg_id]      # was aws_security_group.public_alb.id
   subnets            = var.public_subnet_ids        # was aws_subnet.public[*].id
 
-  tags = { Name = "${var.project_name}-public-alb" }
+  tags = { Name = "${var.project_name}-webtier-alb" }
 }
 
 resource "aws_lb_target_group" "webtier" {
@@ -51,7 +51,7 @@ resource "aws_lb" "internal" {
   security_groups    = [var.internal_alb_sg_id]    # was aws_security_group.internal_alb.id
   subnets            = var.private_subnet_ids       # was aws_subnet.private[*].id
 
-  tags = { Name = "${var.project_name}-internal-alb" }
+  tags = { Name = "${var.project_name}-apptier-alb" }
 }
 
 resource "aws_lb_target_group" "apptier" {
