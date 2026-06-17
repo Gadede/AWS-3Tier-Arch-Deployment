@@ -31,7 +31,7 @@ resource "aws_autoscaling_group" "web" {
   vpc_zone_identifier       = var.public_subnet_ids         # was aws_subnet.public[*].id
   target_group_arns         = [var.webtier_target_group_arn] # was [aws_lb_target_group.web.arn]
   health_check_type         = "ELB"
-  health_check_grace_period = 300
+  health_check_grace_period = 600
 
   min_size         = var.web_asg_config.min_size
   max_size         = var.web_asg_config.max_size
