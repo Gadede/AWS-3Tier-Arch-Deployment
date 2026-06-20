@@ -25,15 +25,15 @@ variable "db_instance_class" {
 variable "db_allocated_storage" {
   description = "The allocated storage for the RDS instance (in GB)"
   type        = number
-  default     = 20  
-  
+  default     = 20
+
 }
 
 variable "db_max_allocated_storage" {
   description = "The maximum allocated storage for the RDS instance (in GB)"
   type        = number
   default     = 100
-  
+
 }
 
 variable "db_name" {

@@ -64,6 +64,10 @@ module "compute" {
   db_name                  = "myappdb"
 }
 
+#----------------------------------------------------
+# Create S3 Bucket to be used as the remote backend
+#----------------------------------------------------
+
 # # Create S3 bucket 
 # resource "aws_s3_bucket" "terraform_state" {
 #   bucket = "richkode-tf-state-bucket"
@@ -99,3 +103,13 @@ module "compute" {
 #   ignore_public_acls      = true
 #   restrict_public_buckets = true
 # }
+
+
+module "image_builder" {
+  source                  = "./modules/image-builder"
+  project_name            = var.project_name
+  region                  = var.region
+  base_ami_id             = data.aws_ami.ubuntu.id
+  build_subnet_id         = module.network.private_subnet_ids[0]
+  build_security_group_id = module.security_group.app_sg_id
+}

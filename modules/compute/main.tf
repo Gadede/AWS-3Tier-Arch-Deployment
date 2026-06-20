@@ -4,12 +4,12 @@
 
 resource "aws_launch_template" "web-tier" {
   name_prefix            = "${var.project_name}-webtier"
-  image_id               = var.ami_id                       
+  image_id               = var.ami_id #data.aws_ami.golden.id               
   instance_type          = var.web_instance_type
-  vpc_security_group_ids = [var.web_sg_id]                  
+  vpc_security_group_ids = [var.web_sg_id]
 
   user_data = base64encode(templatefile("${path.module}/web_user_data.sh", {
-    internal_alb_dns = var.internal_alb_dns                 # was aws_lb.internal.dns_name
+    internal_alb_dns = var.internal_alb_dns # was aws_lb.internal.dns_name
     app_port         = var.app_port
   }))
 
@@ -28,14 +28,14 @@ resource "aws_launch_template" "web-tier" {
 
 resource "aws_autoscaling_group" "web" {
   name                      = "${var.project_name}-web-asg"
-  vpc_zone_identifier       = var.public_subnet_ids         # was aws_subnet.public[*].id
+  vpc_zone_identifier       = var.public_subnet_ids          # was aws_subnet.public[*].id
   target_group_arns         = [var.webtier_target_group_arn] # was [aws_lb_target_group.web.arn]
   health_check_type         = "ELB"
   health_check_grace_period = 600
 
-  min_size         = var.web_asg_config.min_size
-  max_size         = var.web_asg_config.max_size
-  desired_capacity = var.web_asg_config.desired_capacity
+  min_size                  = var.web_asg_config.min_size
+  max_size                  = var.web_asg_config.max_size
+  desired_capacity          = var.web_asg_config.desired_capacity
   wait_for_capacity_timeout = "0"
 
   launch_template {
@@ -68,7 +68,7 @@ resource "aws_autoscaling_policy" "web_cpu" {
 #----------------------------------------------------------
 resource "aws_launch_template" "app-tier" {
   name_prefix            = "${var.project_name}-apptier"
-  image_id               = var.ami_id
+  image_id               = var.ami_id #data.aws_ami.golden.id 
   instance_type          = var.web_instance_type
   vpc_security_group_ids = [var.app_sg_id]
 
@@ -99,9 +99,9 @@ resource "aws_autoscaling_group" "app" {
   health_check_type         = "ELB"
   health_check_grace_period = 300
 
-  min_size         = var.web_asg_config.min_size
-  max_size         = var.web_asg_config.max_size
-  desired_capacity = var.web_asg_config.desired_capacity
+  min_size                  = var.web_asg_config.min_size
+  max_size                  = var.web_asg_config.max_size
+  desired_capacity          = var.web_asg_config.desired_capacity
   wait_for_capacity_timeout = "0"
 
   launch_template {
@@ -126,5 +126,18 @@ resource "aws_autoscaling_policy" "app_cpu" {
       predefined_metric_type = "ASGAverageCPUUtilization"
     }
     target_value = 60.0
+  }
+}
+
+#----------------------------------------------------------
+# Golden AMI
+#----------------------------------------------------------
+data "aws_ami" "golden" {
+  most_recent = true
+  owners      = ["self"] # AMIs your account built
+
+  filter {
+    name   = "tag:Name"
+    values = ["${var.project_name}-golden-ami"]
   }
 }

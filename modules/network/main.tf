@@ -85,7 +85,7 @@ resource "aws_db_subnet_group" "main" {
 # ---------------------------------------------------------------------------
 resource "aws_eip" "nat" {
   count  = length(var.availability_zones)
-  domain = "vpc" 
+  domain = "vpc"
 
   tags = {
     Name = "${var.project_name}-nat-eip-${var.availability_zones[count.index]}"

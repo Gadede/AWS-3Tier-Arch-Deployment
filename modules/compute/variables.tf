@@ -20,13 +20,13 @@ variable "web_asg_config" {
   description = "Configuration for the web tier Auto Scaling Group"
   type = object({
     desired_capacity = number
-    max_size        = number
-    min_size        = number
+    max_size         = number
+    min_size         = number
   })
   default = {
     desired_capacity = 2
-    max_size        = 2
-    min_size        = 2
+    max_size         = 2
+    min_size         = 2
   }
 }
 

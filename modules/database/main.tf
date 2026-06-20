@@ -49,8 +49,8 @@ resource "aws_db_instance" "main" {
   # Master password is generated and stored in AWS Secrets Manager.
   manage_master_user_password = true
 
-  multi_az               = false # Due to the free tier, we set it to false for this demo.
-  
+  multi_az = false # Due to the free tier, we set it to false for this demo.
+
   db_subnet_group_name   = var.db_subnet_group_name
   vpc_security_group_ids = var.vpc_security_group_ids
 
