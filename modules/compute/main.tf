@@ -68,7 +68,7 @@ resource "aws_autoscaling_policy" "web_cpu" {
 #----------------------------------------------------------
 resource "aws_launch_template" "app-tier" {
   name_prefix            = "${var.project_name}-apptier"
-  image_id               = var.ami_id #data.aws_ami.golden.id 
+  image_id               = var.ami_id           #data.aws_ami.golden.id 
   instance_type          = var.web_instance_type
   vpc_security_group_ids = [var.app_sg_id]
 
@@ -129,15 +129,15 @@ resource "aws_autoscaling_policy" "app_cpu" {
   }
 }
 
-#----------------------------------------------------------
-# Golden AMI
-#----------------------------------------------------------
-data "aws_ami" "golden" {
-  most_recent = true
-  owners      = ["self"] # AMIs your account built
+# #----------------------------------------------------------
+# # Golden AMI
+# #----------------------------------------------------------
+# data "aws_ami" "golden" {
+#   most_recent = true
+#   owners      = ["self"] # AMIs your account built
 
-  filter {
-    name   = "tag:Name"
-    values = ["${var.project_name}-golden-ami"]
-  }
-}
+#   filter {
+#     name   = "tag:Name"
+#     values = ["${var.project_name}-golden-ami"]
+#   }
+# }
