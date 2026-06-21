@@ -1,25 +1,23 @@
 name: Terraform CI/CD Deploy 3Tier App Arhitecture
 
 on:
-  
-  push:    
+  push:
     branches:
       - main
-    # paths-ignore:
-    # - 'README.md'
-    # - '.md'
-    paths:
-    - '*'
+    paths-ignore:
+      - 'README.md'
+      - '**.md'
   pull_request:
     branches:
-      - main  
+      - main
     paths-ignore:
-    - 'README.md'
-    - '.md'   
-  workflow_run: # Triggered when manually triggered from the Actions tab
-    workflows: ["gitleaks"] # name
-    types:
-      - completed  
+      - 'README.md'
+      - '**.md'
+  workflow_dispatch:
+
+concurrency:
+  group: terraform-${{ github.ref }}
+  cancel-in-progress: false  
 
 env:
   TF_LOG: INFO
@@ -38,11 +36,29 @@ permissions:
 jobs:
 
 #####################################
+  #  Secret Scanning (Gitleaks)
+#####################################
+  gitleaks:
+    runs-on: ubuntu-latest
+    name: 'Secret Scanning (Gitleaks)'
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Run Gitleaks
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+#####################################
   #  Format , Validation & Linting 
 #####################################
   formatting-validate-linting:
     runs-on: ubuntu-latest
     name: 'Formatting, Linting, and Validation' 
+    needs: gitleaks
     outputs:
       plan_content: ${{ steps.format_plan.outputs.plan_result }}
     steps:
@@ -117,6 +133,7 @@ jobs:
   security-scan:
     runs-on: ubuntu-latest
     name: 'Security Scanning' 
+    needs: gitleaks
     steps:
       - name: Checkout code
         id: checkout
@@ -231,6 +248,4 @@ jobs:
 
       - name: Terraform Apply
         id: apply
-        run: terraform apply -auto-approve 
-      
-      
+        run: terraform apply -auto-approve
