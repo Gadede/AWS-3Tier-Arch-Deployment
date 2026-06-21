@@ -2,6 +2,12 @@
 set -euo pipefail
 
 export DEBIAN_FRONTEND=noninteractive
+
+# The golden AMI ships nginx (needed by the web tier). The app tier runs a
+# Python service on port 80 instead, so stop and disable nginx to free the port.
+systemctl stop nginx || true
+systemctl disable nginx || true
+
 apt-get update -y
 apt-get install -y python3
 
