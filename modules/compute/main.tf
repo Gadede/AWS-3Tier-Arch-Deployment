@@ -116,7 +116,7 @@ resource "aws_autoscaling_group" "app" {
     id      = aws_launch_template.app-tier.id
     version = "$Latest"
   }
-  
+
 # settings for replacing instances use rolling update deployment strategy
     instance_refresh {
     strategy = "Rolling"
@@ -146,15 +146,15 @@ resource "aws_autoscaling_policy" "app_cpu" {
   }
 }
 
-#----------------------------------------------------------
-# Golden AMI
-#----------------------------------------------------------
-data "aws_ami" "golden" {
-  most_recent = true
-  owners      = ["self"] # AMIs your account built
+# #----------------------------------------------------------
+# # Golden AMI
+# #----------------------------------------------------------
+# data "aws_ami" "golden" {
+#   most_recent = true
+#   owners      = ["self"] # AMIs your account built
 
-  filter {
-    name   = "tag:Name"
-    values = ["${var.project_name}-golden-ami"]
-  }
-}
+#   filter {
+#     name   = "tag:Name"
+#     values = ["${var.project_name}-golden-ami"]
+#   }
+# }
