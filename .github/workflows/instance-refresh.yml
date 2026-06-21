@@ -1,0 +1,42 @@
+name: Roll Instance Refresh
+
+on:
+  workflow_dispatch:
+    inputs:
+      asg:
+        description: 'Which ASG to refresh'
+        required: true
+        type: choice
+        options:
+          - aws-3tier-web-asg
+          - aws-3tier-app-asg
+          - both
+
+permissions:
+  id-token: write
+  contents: read
+
+env:
+  AWS_REGION: us-east-2
+
+jobs:
+  refresh:
+    name: Trigger Instance Refresh
+    runs-on: ubuntu-latest
+    steps:
+      - name: Configure AWS credentials (OIDC)
+        uses: aws-actions/configure-aws-credentials@v5.1.0
+        with:
+          role-to-assume: ${{ secrets.AWS_OIDC_ROLE_ARN }}
+          role-session-name: GitHubActions
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Start instance refresh
+        run: |
+          PREFS='{"MinHealthyPercentage":50,"InstanceWarmup":600}'
+          if [ "${{ inputs.asg }}" = "both" ]; then
+            aws autoscaling start-instance-refresh --auto-scaling-group-name aws-3tier-web-asg --preferences "$PREFS"
+            aws autoscaling start-instance-refresh --auto-scaling-group-name aws-3tier-app-asg --preferences "$PREFS"
+          else
+            aws autoscaling start-instance-refresh --auto-scaling-group-name ${{ inputs.asg }} --preferences "$PREFS"
+          fi
