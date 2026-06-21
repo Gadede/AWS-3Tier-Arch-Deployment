@@ -104,7 +104,6 @@ module "compute" {
 #   restrict_public_buckets = true
 # }
 
-
 module "image_builder" {
   source                  = "./modules/image-builder"
   project_name            = var.project_name
