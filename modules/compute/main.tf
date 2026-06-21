@@ -4,7 +4,7 @@
 
 resource "aws_launch_template" "web-tier" {
   name_prefix            = "${var.project_name}-webtier"
-  image_id               = var.ami_id #data.aws_ami.golden.id               
+  image_id               =  data.aws_ami.golden.id     #var.ami_id                
   instance_type          = var.web_instance_type
   vpc_security_group_ids = [var.web_sg_id]
 
@@ -43,6 +43,14 @@ resource "aws_autoscaling_group" "web" {
     version = "$Latest"
   }
 
+  instance_refresh {
+    strategy = "Rolling"
+    preferences {
+      min_healthy_percentage = 50
+      instance_warmup        = 300
+    }
+  }
+
   tag {
     key                 = "Name"
     value               = "${var.project_name}-web-tier"
@@ -68,7 +76,7 @@ resource "aws_autoscaling_policy" "web_cpu" {
 #----------------------------------------------------------
 resource "aws_launch_template" "app-tier" {
   name_prefix            = "${var.project_name}-apptier"
-  image_id               = var.ami_id           #data.aws_ami.golden.id 
+  image_id               = data.aws_ami.golden.id       #var.ami_id           
   instance_type          = var.web_instance_type
   vpc_security_group_ids = [var.app_sg_id]
 
@@ -108,6 +116,15 @@ resource "aws_autoscaling_group" "app" {
     id      = aws_launch_template.app-tier.id
     version = "$Latest"
   }
+  
+# settings for replacing instances use rolling update deployment strategy
+    instance_refresh {
+    strategy = "Rolling"
+    preferences {
+      min_healthy_percentage = 50
+      instance_warmup        = 300
+    }
+  }
 
   tag {
     key                 = "Name"
@@ -129,15 +146,15 @@ resource "aws_autoscaling_policy" "app_cpu" {
   }
 }
 
-# #----------------------------------------------------------
-# # Golden AMI
-# #----------------------------------------------------------
-# data "aws_ami" "golden" {
-#   most_recent = true
-#   owners      = ["self"] # AMIs your account built
+#----------------------------------------------------------
+# Golden AMI
+#----------------------------------------------------------
+data "aws_ami" "golden" {
+  most_recent = true
+  owners      = ["self"] # AMIs your account built
 
-#   filter {
-#     name   = "tag:Name"
-#     values = ["${var.project_name}-golden-ami"]
-#   }
-# }
+  filter {
+    name   = "tag:Name"
+    values = ["${var.project_name}-golden-ami"]
+  }
+}
