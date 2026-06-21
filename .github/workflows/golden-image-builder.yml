@@ -1,0 +1,34 @@
+name: Bake Golden AMI
+
+on:
+  workflow_dispatch:        # manual trigger from Actions tab
+  schedule:
+    - cron: '0 3 1 * *'     # also auto-bake monthly (1st at 03:00 UTC)
+
+permissions:
+  id-token: write
+  contents: read
+
+env:
+  AWS_REGION: us-east-2
+
+jobs:
+  bake:
+    name: Trigger Golden AMI Build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Configure AWS credentials (OIDC)
+        uses: aws-actions/configure-aws-credentials@v5.1.0
+        with:
+          role-to-assume: ${{ secrets.AWS_OIDC_ROLE_ARN }}
+          role-session-name: GitHubActions
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Start Image Builder pipeline
+        run: |
+          PIPELINE_ARN=$(aws imagebuilder list-image-pipelines \
+            --query "imagePipelineList[?name=='aws-3tier-golden-ami-pipeline'].arn" \
+            --output text)
+          echo "Triggering pipeline: $PIPELINE_ARN"
+          aws imagebuilder start-image-pipeline-execution \
+            --image-pipeline-arn "$PIPELINE_ARN"
