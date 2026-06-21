@@ -43,7 +43,7 @@ variable "web_asg_config" {
   })
   default = {
     desired_capacity = 1
-    max_size         = 3
+    max_size         = 2
     min_size         = 1
   }
 }
