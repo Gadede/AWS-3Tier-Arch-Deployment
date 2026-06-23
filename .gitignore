@@ -5,6 +5,7 @@
 # Local .terraform directories (providers, modules cache) — large, machine-specific
 **/.terraform/*
 .terraform.lock.hcl.bak
+final*.json
 
 
 # State files — NEVER commit. Contains secrets (RDS passwords, etc.) in plaintext.
