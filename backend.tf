@@ -1,6 +1,6 @@
 terraform {
   backend "s3" {
-    bucket       = "richkode-terraform-state-bucket"
+    bucket       = "richkode-terraformstate-bucket"
     key          = "dev/terraform.tfstate"
     region       = "us-east-2"
     encrypt      = true
